@@ -18,12 +18,12 @@ const InterviewLink = ({ link }) => {
         You can follow this link by pressing go button or just copy and paste{" "}
       </h1>
       <a
-        href={`http://localhost:3000/interviewbot?id=${randomId}`}
+        href={`http://lilly-updated.vercel.app/interviewbot?id=${randomId}`}
         target="_blank"
         rel="noopener noreferrer"
         className="text-blue-600 mb-4"
       >
-        {`http://localhost:3000/interviewbot?id=${randomId}`}
+        {`http://lilly-updated.vercel.app/interviewbot?id=${randomId}`}
       </a>
       <div className="flex space-x-4">
         <button
@@ -34,7 +34,7 @@ const InterviewLink = ({ link }) => {
         </button>
         <a
           // href={`https://lili.linxap.com/interviewbot?id=${randomId}`}
-          href={`http://localhost:3000/interviewbot?id=${randomId}`}
+          href={`http://lilly-updated.vercel.app/interviewbot?id=${randomId}`}
           // target="_blank"
           rel="noopener noreferrer"
           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
