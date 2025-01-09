@@ -1,11 +1,7 @@
 // 'use client'
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import InterviewLink from "./InterviewLink";
 import { useToast } from "../context/Toast";
-import { getDocument } from "pdfjs-dist";
-import "pdfjs-dist/build/pdf.worker.min.mjs";
-import "pdfjs-dist/build/pdf.worker.mjs";
-import "../pdf-worker";
 
 function InterviewForm() {
   const [file, setFile] = useState(null);
@@ -70,39 +66,6 @@ function InterviewForm() {
     }));
   };
 
-  const extractTextFromPDF = async (file) => {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await getDocument({ data: arrayBuffer }).promise;
-    let text = "";
-
-    for (let i = 0; i < pdf.numPages; i++) {
-      const page = await pdf.getPage(i + 1);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items.map((item) => item.str).join(" ");
-      text += ` ${pageText}`;
-    }
-
-    console.log("asczxc", updateData);
-    return text;
-  };
-  const extractKeyValues = (text) => {
-    const nameMatch = text.match(
-      /(?:Name|Full Name|Candidate|Applicant):?\s*([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)/i
-    );
-    const emailMatch = text.match(
-      /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i
-    );
-    const phoneMatch = text.match(
-      /(\+?\d{1,4}[\s-])?(?:\(?\d{3}\)?[\s-]?)?\d{3}[\s-]?\d{4}/
-    );
-
-    return {
-      name: nameMatch ? nameMatch[1] : "Not found",
-      email: emailMatch ? emailMatch[0] : "Not found",
-      phone: phoneMatch ? phoneMatch[0] : "Not found",
-    };
-  };
-
   const shape = [
     {
       question:
@@ -112,13 +75,8 @@ function InterviewForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitted(true);
-    if (file) {
-      const text = await extractTextFromPDF(file);
-      setResumeText(text);
-      const extractedValues = extractKeyValues(text);
-      setKeyValues(extractedValues);
-    }
-    const prompt = `Take this information name: ${formData.name} job titel : ${formData.job_title} years of expiriance ${formData.years_expriance}also Extracted resume text: ${resumeText}\n\nAdditional information: ${keyValues}\n\nGenerate 10 interview questions based on the above information.format the response as JSON as a array of objects use this format: ${shape} `;
+
+    const prompt = `Take this information name: ${formData.name} job titel : ${formData.job_title} years of expiriance ${formData.years_expriance}also Extracted resume text: ${resumeText}\n\nAdditional information: \n\nGenerate 10 interview questions based on the above information.format the response as JSON as a array of objects use this format: ${shape} `;
     const res = await fetch("/api/chatgpt", {
       method: "POST",
       headers: {
